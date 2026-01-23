@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Guardian | Professional Network Security Analysis</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+        
+        .main-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 50px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        
+        .stat-card.total { border-left-color: #667eea; }
+        .stat-card.safe { border-left-color: #10b981; }
+        .stat-card.unsafe { border-left-color: #ef4444; }
+        .stat-card.type { border-left-color: #f59e0b; }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1;
+        }
+        
+        .scan-modes-section {
+            padding: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+        
+        .scan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .scan-option {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .scan-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+        }
+        
+        .scan-option.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+        }
+        
+        .scan-option.active .scan-icon {
+            color: white;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .scan-option.active .scan-description {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .scan-icon {
+            width: 48px;
+            height: 48px;
+            background: #667eea;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .scan-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+        
+        .scan-option.active .scan-title {
+            color: white;
+        }
+        
+        .scan-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .options-panel {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        .execute-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .execute-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102,126,234,0.4);
+        }
+        
+        .execute-btn:disabled {
+            opacity: 0.6;
+        }
+        
+        .results-section {
+            padding: 40px;
+            background: #f9fafb;
+        }
+        
+        .results-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .results-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .results-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .results-table {
+            margin: 0;
+        }
+        
+        .results-table thead th {
+            background: #f9fafb;
+            border: none;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            padding: 16px 20px;
+        }
+        
+        .results-table tbody td {
+            padding: 16px 20px;
+            border-color: #f3f4f6;
+            vertical-align: middle;
+        }
+        
+        .results-table tbody tr:hover {
+            background: #f9fafb;
+        }
+        
+        .results-table tbody tr.unsafe-row {
+            background: #fef3c7;
+        }
+        
+        .results-table tbody tr.unsafe-row:hover {
+            background: #fde68a;
+        }
+        
+        .mac-address {
+            font-family: 'Courier New', monospace;
+            background: #f3f4f6;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+        
+        .status-badge-table {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.813rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status-safe {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-unsafe {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .info-section {
+            padding: 40px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 4px solid #667eea;
+        }
+        
+        .info-card h5 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+        
+        .info-card p {
+            font-size: 0.938rem;
+            color: #6b7280;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .technical-box {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-top: 30px;
+        }
+        
+        .technical-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 20px;
+        }
+        
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .function-item h6 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+        
+        .function-item p {
+            font-size: 0.875rem;
+            color: #6b7280;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .workflow-section {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 25px;
+        }
+        
+        .workflow-section h6 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+        
+        .workflow-section ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .workflow-section li {
+            font-size: 0.938rem;
+            color: #4b5563;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="main-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-content">
+                <h1 class="main-title">Network Guardian</h1>
+                <p class="subtitle">Advanced network security analysis powered by ARP-Scan technology</p>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div id="statsSection" style="display: none; padding: 40px 40px 0;">
+            <div class="stats-grid">
+                <div class="stat-card total">
+                    <div class="stat-label">Total Devices</div>
+                    <div class="stat-value" id="totalDevices">0</div>
+                </div>
+                <div class="stat-card safe">
+                    <div class="stat-label">Safe Devices</div>
+                    <div class="stat-value" id="safeDevices">0</div>
+                </div>
+                <div class="stat-card unsafe">
+                    <div class="stat-label">Unsafe Devices</div>
+                    <div class="stat-value" id="unsafeDevices">0</div>
+                </div>
+                <div class="stat-card type">
+                    <div class="stat-label">Scan Type</div>
+                    <div class="stat-value" id="scanTypeDisplay" style="font-size: 1.5rem; text-transform: capitalize;">-</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scan Modes Section -->
+        <div class="scan-modes-section">
+            <h2 class="section-title">Scan Operation Modes</h2>
+            
+            <div class="scan-grid">
+                <div class="scan-option" onclick="selectScan('local')">
+                    <div class="scan-icon"><i class="fas fa-network-wired"></i></div>
+                    <div class="scan-title">Local Network Scan</div>
+                    <p class="scan-description">Standard subnet discovery using automatic interface detection</p>
+                </div>
+
+                <div class="scan-option" onclick="selectScan('interface')">
+                    <div class="scan-icon"><i class="fas fa-ethernet"></i></div>
+                    <div class="scan-title">Interface-Specific Scan</div>
+                    <p class="scan-description">Target a specific network adapter for isolated scanning</p>
+                </div>
+
+                <div class="scan-option" onclick="selectScan('subnet')">
+                    <div class="scan-icon"><i class="fas fa-sitemap"></i></div>
+                    <div class="scan-title">Custom Subnet Scan</div>
+                    <p class="scan-description">Scan any subnet in CIDR notation for targeted analysis</p>
+                </div>
+
+                <div class="scan-option" onclick="selectScan('retry')">
+                    <div class="scan-icon"><i class="fas fa-redo"></i></div>
+                    <div class="scan-title">High-Accuracy Scan</div>
+                    <p class="scan-description">Multiple retry attempts to reduce false negatives</p>
+                </div>
+
+                <div class="scan-option" onclick="selectScan('bandwidth')">
+                    <div class="scan-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <div class="scan-title">Bandwidth Control</div>
+                    <p class="scan-description">Adjust packet transmission rate for optimized scanning</p>
+                </div>
+
+                <div class="scan-option" onclick="selectScan('duplicates')">
+                    <div class="scan-icon"><i class="fas fa-clone"></i></div>
+                    <div class="scan-title">Duplicate IP Detection</div>
+                    <p class="scan-description">Identify IP address conflicts on your network</p>
+                </div>
+
+                <div class="scan-option" onclick="selectScan('random_mac')">
+                    <div class="scan-icon"><i class="fas fa-user-secret"></i></div>
+                    <div class="scan-title">Stealth Mode</div>
+                    <p class="scan-description">Randomized source MAC for anonymous scanning</p>
+                </div>
+
+                <div class="scan-option" onclick="selectScan('verbose')">
+                    <div class="scan-icon"><i class="fas fa-list-alt"></i></div>
+                    <div class="scan-title">Verbose Mode</div>
+                    <p class="scan-description">Detailed packet-level information and diagnostics</p>
+                </div>
+            </div>
+
+            <!-- Options Panel -->
+            <div id="scanOptions" class="options-panel" style="display: none;">
+                <div class="row align-items-end">
+                    <div class="col-md-8" id="optionInputs"></div>
+                    <div class="col-md-4 text-end">
+                        <button id="scanBtn" class="btn btn-primary execute-btn" onclick="startScan()">
+                            Execute Scan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section">
+            <div class="results-card">
+                <div class="results-header">
+                    <h3 class="results-title">Scan Results</h3>
+                    <span id="scanStatus" class="status-badge">Ready</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table results-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>IP Address</th>
+                                <th>MAC Address</th>
+                                <th>Vendor Identity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deviceTable">
+                            <tr><td colspan="5" class="text-center text-muted">Select a scan mode and click "Execute Scan" to begin</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <div class="info-grid">
+                <div class="info-card">
+                    <h5>Layer 2 Discovery</h5>
+                    <p>Unlike ICMP pings, ARP operates at the Data Link layer, discovering devices even if they have firewalls configured in stealth mode or ignore ping requests completely.</p>
+                </div>
+                <div class="info-card">
+                    <h5>Vendor OUI Lookup</h5>
+                    <p>Every MAC address contains a 3-byte Organizationally Unique Identifier. The tool maps these to manufacturers like Cisco, Dell, or Apple using IEEE registrations.</p>
+                </div>
+            </div>
+
+            <div class="technical-box">
+                <h3 class="technical-title">ARP-Scan Functions Explained</h3>
+                <div class="function-grid">
+                    <div class="function-item">
+                        <h6>Local Network Scan (-l)</h6>
+                        <p>Scans all devices on the local network segment using automatic interface detection.</p>
+                    </div>
+                    <div class="function-item">
+                        <h6>Interface-Specific (-I)</h6>
+                        <p>Target a specific network adapter when you have multiple NICs or virtual interfaces.</p>
+                    </div>
+                    <div class="function-item">
+                        <h6>Custom Subnet</h6>
+                        <p>Scan any subnet in CIDR notation (e.g., 10.0.0.0/8) for targeted reconnaissance.</p>
+                    </div>
+                    <div class="function-item">
+                        <h6>High-Accuracy Retry (-r)</h6>
+                        <p>Send multiple ARP requests per host to reduce false negatives from packet loss.</p>
+                    </div>
+                    <div class="function-item">
+                        <h6>Bandwidth Control (-b)</h6>
+                        <p>Throttle packet transmission rate. Higher values mean faster scans, lower values are gentler on the network.</p>
+                    </div>
+                    <div class="function-item">
+                        <h6>Duplicate Detection (-d)</h6>
+                        <p>Identify IP conflicts where multiple MAC addresses respond to the same IP address.</p>
+                    </div>
+                    <div class="function-item">
+                        <h6>Stealth Mode (-R)</h6>
+                        <p>Randomizes source MAC to avoid correlation with your real hardware address during scanning.</p>
+                    </div>
+                    <div class="function-item">
+                        <h6>Verbose Output (-v)</h6>
+                        <p>Display detailed packet information including timing, retries, and protocol-level details.</p>
+                    </div>
+                </div>
+
+                <div class="workflow-section">
+                    <h6>How Classification Works</h6>
+                    <ol>
+                        <li><strong>ARP Request Broadcast:</strong> The tool sends Who-has packets to all IPs in the scan range</li>
+                        <li><strong>Hardware Response:</strong> Devices reply with their MAC addresses at Layer 2</li>
+                        <li><strong>OUI Database Matching:</strong> The first 3 bytes of the MAC are matched against IEEE vendor registrations</li>
+                        <li><strong>Trust Verification:</strong> IPs and MACs are checked against trusted_ips.txt to flag unauthorized devices</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentScanType = 'local';
+    let scanParams = {};
+
+    function selectScan(scanType) {
+        currentScanType = scanType;
+        
+        // Update UI
+        document.querySelectorAll('.scan-option').forEach(el => el.classList.remove('active'));
+        event.target.closest('.scan-option').classList.add('active');
+        
+        const optionsPanel = document.getElementById('scanOptions');
+        const optionInputs = document.getElementById('optionInputs');
+        optionsPanel.style.display = 'block';
+        
+        // Clear previous inputs
+        optionInputs.innerHTML = '';
+        scanParams = {};
+        
+        // Add scan-specific inputs
+        if (scanType === 'interface') {
+            optionInputs.innerHTML = `
+                <label class="form-label">Network Interface</label>
+                <select class="form-select" id="interfaceSelect">
+                    <option value="eth0">eth0</option>
+                    <option value="wlan0">wlan0</option>
+                    <option value="eno1">eno1</option>
+                </select>
+            `;
+        } else if (scanType === 'subnet') {
+            optionInputs.innerHTML = `
+                <label class="form-label">Subnet (CIDR)</label>
+                <input type="text" class="form-control" id="subnetInput" placeholder="192.168.1.0/24" value="192.168.1.0/24">
+            `;
+        } else if (scanType === 'retry') {
+            optionInputs.innerHTML = `
+                <label class="form-label">Retry Count</label>
+                <input type="number" class="form-control" id="retryInput" value="3" min="1" max="10">
+                <small class="text-muted">Higher values are more thorough but slower</small>
+            `;
+        } else if (scanType === 'bandwidth') {
+            optionInputs.innerHTML = `
+                <label class="form-label">Bandwidth (packets/sec)</label>
+                <input type="number" class="form-control" id="bandwidthInput" value="256" min="10" max="1000">
+                <small class="text-muted">Default: 256 packets per second</small>
+            `;
+        } else {
+            optionInputs.innerHTML = `<p class="text-muted">This scan type uses default parameters</p>`;
+        }
+    }
+
+    async function startScan() {
+        const btn = document.getElementById('scanBtn');
+        const tableBody = document.getElementById('deviceTable');
+        const statusBadge = document.getElementById('scanStatus');
+        const statsSection = document.getElementById('statsSection');
+        
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Scanning...';
+        statusBadge.textContent = 'Scanning...';
+        statusBadge.style.background = 'rgba(251,191,36,0.3)';
+        tableBody.innerHTML = "<tr><td colspan='5' class='text-center'>Probing ARP table and mapping vendors...</td></tr>";
+
+        // Build query parameters
+        let queryParams = `type=${currentScanType}`;
+        
+        if (currentScanType === 'interface') {
+            const iface = document.getElementById('interfaceSelect')?.value;
+            if (iface) queryParams += `&interface=${iface}`;
+        } else if (currentScanType === 'subnet') {
+            const subnet = document.getElementById('subnetInput')?.value;
+            if (subnet) queryParams += `&subnet=${encodeURIComponent(subnet)}`;
+        } else if (currentScanType === 'retry') {
+            const retry = document.getElementById('retryInput')?.value;
+            if (retry) queryParams += `&retry=${retry}`;
+        } else if (currentScanType === 'bandwidth') {
+            const bw = document.getElementById('bandwidthInput')?.value;
+            if (bw) queryParams += `&bandwidth=${bw}`;
+        }
+
+        try {
+            const response = await fetch(`/scan?${queryParams}`);
+            const data = await response.json();
+
+            if (data.error) {
+                tableBody.innerHTML = `<tr><td colspan='5' class='text-center text-danger'>Error: ${data.error}</td></tr>`;
+                statusBadge.textContent = 'Error';
+                statusBadge.style.background = 'rgba(239,68,68,0.3)';
+            } else {
+                // Update statistics
+                document.getElementById('totalDevices').textContent = data.total || 0;
+                document.getElementById('safeDevices').textContent = data.safe_count || 0;
+                document.getElementById('unsafeDevices').textContent = data.unsafe_count || 0;
+                document.getElementById('scanTypeDisplay').textContent = data.scan_type || currentScanType;
+                statsSection.style.display = 'block';
+
+                // Update table
+                tableBody.innerHTML = "";
+                if (data.devices && data.devices.length > 0) {
+                    data.devices.forEach((device, index) => {
+                        const isSafe = device.status === 'Safe';
+                        const badgeClass = isSafe ? 'status-safe' : 'status-unsafe';
+                        const rowClass = isSafe ? '' : 'unsafe-row';
+                        
+                        tableBody.innerHTML += `
+                            <tr class="${rowClass}">
+                                <td><strong>${index + 1}</strong></td>
+                                <td><strong>${device.ip}</strong></td>
+                                <td><span class="mac-address">${device.mac}</span></td>
+                                <td>${device.vendor}</td>
+                                <td><span class="status-badge-table ${badgeClass}">${device.status}</span></td>
+                            </tr>`;
+                    });
+                    statusBadge.textContent = 'Complete';
+                    statusBadge.style.background = 'rgba(16,185,129,0.3)';
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan='5' class='text-center text-info'>No devices found in this scan</td></tr>`;
+                    statusBadge.textContent = 'No Results';
+                    statusBadge.style.background = 'rgba(59,130,246,0.3)';
+                }
+            }
+        } catch (err) {
+            tableBody.innerHTML = `<tr><td colspan='5' class='text-center text-danger'>Scan Error: ${err}</td></tr>`;
+            statusBadge.textContent = 'Failed';
+            statusBadge.style.background = 'rgba(239,68,68,0.3)';
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = "Execute Scan";
+    }
+</script>
+
+</body>
+</html>
